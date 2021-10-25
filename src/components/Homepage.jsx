@@ -15,7 +15,10 @@ const replaceAllComma = (str) => {
 
 const Homepage = () => {
     const {data,isFetching} = useGetCryptosQuery(30);
-    const globalStats = data?data.data.stats: null ;
+    //const globalStats = data?data.data.stats: null;
+    const globalStats = data && data.data && data.data.stats;
+    console.log(data);
+
            
     if(isFetching) return 'Loading...';
     return (
@@ -26,7 +29,7 @@ const Homepage = () => {
                     <Statistic title="Total Cryptocurrencies" value={globalStats.total}/>
                 </Col>
                 <Col span={12}>
-                    { <Statistic title="Total Exchanges"  value={millify(Number(globalStats.totalExchanges))} /> }
+                    <Statistic title="Total Exchanges"  value={millify(Number(globalStats.totalExchanges))} /> 
                 </Col>
                 <Col span={12}>
                     <Statistic title="Total Market Cap" value={millify(replaceAllComma(`${globalStats.totalMarketCap}`))} />
@@ -47,7 +50,7 @@ const Homepage = () => {
                 <Title level={2} className="home-title">Latest Crypto News</Title>
                 <Title level={3} className="show-more"><Link to="/news">Show More</Link></Title>
             </div>
-            <News />
+            <News simplified />
             
         </React.Fragment>
     )
