@@ -4,7 +4,8 @@ import { useParams } from 'react-router';
 import millify from 'millify';
 import {Col,Row,Typography,Select} from 'antd';
 import { MoneyCollectOutlined, DollarCircleOutlined, FundOutlined, ExclamationCircleOutlined, StopOutlined, TrophyOutlined, CheckOutlined, NumberOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { useGetCryptoDetailQuery } from '../services/cryptoApi';
+import { useGetCryptoDetailQuery,useGetCryptoHistoryQuery } from '../services/cryptoApi';
+import LineChart from './LineChart';
 const {Title,Text} = Typography;
 const {Option} = Select;
 // const replaceAllComma = (str) => {
@@ -16,14 +17,17 @@ const CryptoDetails =()=> {
     const [timePeriod,setTimePeriod] = useState('7d');
     const {coinId} = useParams();
     const {data,isFetching} = useGetCryptoDetailQuery(coinId);
+    const {data:coinHistory,isFetching2} = useGetCryptoHistoryQuery({coinId,timePeriod});
    
     //console.log(data);
     //return 'Hello';
     if(isFetching){return "Loading..."}
+    if(isFetching2){return "Loading2..."}
     
     const cryptoDetails = data&&data.data&&data.data.coin;
 
-    console.log(data,'crypto')
+    console.log(data,'crypto');
+    console.log(coinHistory,"history")
 
     const time = ['3h', '24h', '7d', '30d', '1y', '3m', '3y', '5y'];
 
@@ -68,6 +72,9 @@ const CryptoDetails =()=> {
                     <Option key={date}>{date}</Option>
                 )}
             </Select>
+
+            <LineChart coinHistory={coinHistory} currentPrice={millify(cryptoDetails && cryptoDetails.price)} coinName={cryptoDetails && cryptoDetails.name}/>
+
             <Col className="stats-container">
                 <Col className="coin-value-statistics">
                     <Col className="coin-value-statistics-heading">
